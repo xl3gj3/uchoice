@@ -1,8 +1,8 @@
 <?php
 // require "../global_config/development_data_process/test.inc";
-require "../global_config/development_data_process/config.inc";
-require "../global_config/development_data_process/Database.class.inc";
-require "../global_config/development_data_process/db_helper.inc";
+require "../../global_config/development_data_process/config.inc";
+require "../../global_config/development_data_process/Database.class.inc";
+require "../../global_config/development_data_process/db_helper.inc";
 
   if ($_GET) {
     $db = new db_helper();
