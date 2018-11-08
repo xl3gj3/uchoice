@@ -1,5 +1,5 @@
 <?php
-include "JerryDatabase.class.inc";
+include "Database.class.inc";
 
 
 class db_helper{
