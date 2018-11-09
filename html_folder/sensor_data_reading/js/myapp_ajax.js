@@ -8,22 +8,38 @@
   function ajax_load_config (url){
     ajax_config.api_url = url;
   }
-  read_data_ajax.submit = function (data){
+  read_data_ajax.submit = function (action,data, function_name){
     console.log("in the read_data_ajax file, the data to be submited is ", data);
     let data_string = JSON.stringify(data);
+    let function_title = JSON.stringify(function_name);
+    console.log("function_name = " ,function_name);
     console.log("url is ", ajax_config.api_url);
     $.ajax({
       method : 'GET',
       dataType : 'json',
       url : ajax_config.api_url,
-      data : { function : 'get_customer_order_data', data : data_string },
+      data : { function : function_name , data : data_string},
       success : function(response) {
         if (response.status <0) {
-          console.log("error happend and handleing");
+          console.log("error");
+          console.log(response.errMsg);
 
         }else {
-          console.log("success");
-          read_data.display_customer_order(response.data);
+          // console.log("success");
+          switch (action) {
+            case 0:
+              console.log("construct customer order data");
+              read_data.construct_display_page(response.data);
+
+              break;
+            case 1:
+            console.log("construct product sensor data");
+
+              read_data.construct_sensor_data_page(response.data);
+
+              break;
+            default:
+          }
         }
       }
     });

@@ -31,18 +31,30 @@
   }
   // // TEMP: testing page function
   function construct_testing_page (){
+    init_selector();
     let view_generator = new build_view(config);
     view_generator.testing_page(selector);
     console.log("this testing selector is ",selector);
 
   }
-  read_data.submit = function (data){
-      read_data_ajax.submit(data);
+  read_data.main_submit = function (action_flag,data,function_name){
+      read_data_ajax.submit(action_flag,data,function_name);
   }
-  read_data.display_customer_order = function (data){
+  read_data.construct_display_page = function (data){
+    init_selector();
     console.log("data be display is" ,data);
+    let view_generator = new build_view(config);
+    view_generator.display_customer_data(data,selector);
+    console.log("this data selector is ",selector);
+    read_data.controller.bind("display_data",selector);
 
 
+  }
+  read_data.construct_sensor_data_page = function (data){
+    init_selector();
+    let view_generator = new build_view(config);
+    view_generator.sesnsor_data(data);
+    console.log("this testing selector is ",selector);
   }
   read_data.load = function (cfg){
     console.log("loading js file");
@@ -54,6 +66,10 @@
     read_data.controller.bind("testing",selector);
     // COMBAK: uncomment the construct_main_page
     // construct_main_page();
+  }
+  function init_selector(){
+    selector.id = {};
+    selector.cls = {};
   }
   return read_data;
 }))

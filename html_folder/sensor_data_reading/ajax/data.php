@@ -17,6 +17,7 @@ try {
     } else if (!empty($_GET['function'])) {
       $response["test msg"] = "get request : get success";
       $service = new data_get();
+      // var_dump($_GET);
       if (!empty($_GET['data'])) $data = json_decode($_GET['data'],true);
       $response['data'] = $service->{$_GET['function']}($data);
 
@@ -34,7 +35,7 @@ try {
         $response['status'] = -2;
         break;
       default:
-        $response['errMsg'] = "Something wrong with data you save, please try again";
+        $response['errMsg'] = $e->getMessage();
         break;
     }
 }

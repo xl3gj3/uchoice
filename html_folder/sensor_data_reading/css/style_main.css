@@ -1,8 +1,11 @@
 .main_input_title{
   display: inline-block;
-  
+
 }
 .main_input_field{
   display: inline-block;
 
+}
+.product_data_holder{
+  margin-top: 30px;
 }
