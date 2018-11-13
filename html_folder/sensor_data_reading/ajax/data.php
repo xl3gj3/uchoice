@@ -1,7 +1,7 @@
 <?php
 //include "../../includes/global.inc";
-include "../../../global_config/development_data_process/data_service.inc";
-include '../../../global_config/development_data_process/config.inc';
+include "../../../global_includes/development_data_process/data_service.inc";
+include '../../../global_includes/development_data_process/config.inc';
 // include INCLUDE_PATH . '/JerryDatabase.class.inc';
 
 //include '../includes/import.inc';

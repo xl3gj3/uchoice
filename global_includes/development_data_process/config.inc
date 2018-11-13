@@ -7,7 +7,7 @@ defined('DB_PASS') or define("DB_PASS", "");
 defined('DB_NAME') or define("DB_NAME", "development_data_process");
 
 
-defined('INCLUDE_PATH') or define('INCLUDE_PATH', 'C:/xampp/htdocs/uchoice/global_config/development_data_process');
+defined('INCLUDE_PATH') or define('INCLUDE_PATH', 'C:/xampp/htdocs/uchoice/global_includes/development_data_process');
 
 // error_reporting(0);
 
