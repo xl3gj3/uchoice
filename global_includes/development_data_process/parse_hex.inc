@@ -33,26 +33,14 @@
       //
       // var_dump($this->data);
       $this->data = $this->obtain_number_sensors();
-      echo "the number of sensor is ".$this->sensors_number.PHP_EOL;
-      echo "Below is data after obtain_number_sensors id " .PHP_EOL.PHP_EOL;
+      // echo "the number of sensor is ".$this->sensors_number.PHP_EOL;
+      // echo "Below is data after obtain_number_sensors id " .PHP_EOL.PHP_EOL;
       // $this->data = $this->parse_sensor_data();
 
       for ($i=0; $i < $this->sensors_number; $i++) {
         $this->data = $this->parse_sensor_data();
-
-
-        // code...
-        // after the number of sensors, the reset of data represent following :
-        // name : 10 hex number(5 sets)
-        // data types : 2 hex number
-                //  0 = 1 bytes ( 2 hex number)
-                //  1 = 2 bytes ( 4 hex number)
-                //  2 = 3 bytes ( 6 hex number)
-                //  3 = floating 4 bytes (8  hex number)
-        // data : depend on data type
-
       }
-      var_dump( $this->data);
+      // var_dump( $this->data);
 
 
       return $this->response;
@@ -80,10 +68,11 @@
 
         $str_name .= chr(hexdec($hex_name[$i]));
       }
-      echo "sensor name is $str_name". PHP_EOL;
+      // echo "sensor name is $str_name". PHP_EOL;
       //  the for loop below is dealing with the data type
       $temp_data = $this->rearrange_data($temp_data);
-      $this->data = $temp_data;
+      $this->refresh_object_data($temp_data);
+
       // var_dump($temp_data);
       // echo "size of data_type_len is " .sizeof($this->data_type_len).PHP_EOL;
       for ($i=0; $i < $this->data_type_len; $i++) {
@@ -96,7 +85,7 @@
       // 0 = 1 bytes, so we plus 1
       $data_type = hexdec($data_type) + 1;
 
-      echo "data type is $data_type". PHP_EOL;
+      // echo "data type is $data_type". PHP_EOL;
 
       // # if data_type is 03, we use hexTo32Float , otherwise, we use hexdec(php preset function)
       switch ($data_type) {
@@ -108,8 +97,8 @@
             unset($temp_data[$i]);
           }
           $reading_data = $this->hexTo32Float($reading_data);
-          echo "floating ".PHP_EOL;
-          echo $reading_data .PHP_EOL;
+          // echo "floating ".PHP_EOL;
+          // echo $reading_data .PHP_EOL;
 
           $this->response[$str_name] = $reading_data;
           break;
@@ -150,7 +139,7 @@
     private function obtain_id (){
       $id = "";
       $temp_data = $this->data;
-      echo "Below is data" .PHP_EOL.PHP_EOL;
+      // echo "Below is data" .PHP_EOL.PHP_EOL;
       // var_dump($this->data);
 
       for ($i=0; $i < $this->id_len; $i++) {
