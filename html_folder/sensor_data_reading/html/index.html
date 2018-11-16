@@ -8,11 +8,7 @@
       crossorigin="anonymous">
     </script>
     <!-- <script src="../js/myapp_ajax.js"></script> -->
-    <script src="../js/main.js"></script>
-    <script src="../js/myapp_ajax.js"></script>
 
-    <script src="../js/view.js"></script>
-    <script src="../js/controller.js"></script>
 
 
 
@@ -27,10 +23,13 @@
 
   </body>
 </html>
-
+<script src="../js/main.js"></script>
+<script src="../js/myapp_ajax.js"></script>
+<script src="../js/view.js"></script>
+<script src="../js/controller.js"></script>
 <script>
   $(document).ready(function(){
-    read_data.load(
+    read_data.main.load(
       {
         id : "uchoice_app",
         ajax_url : "../ajax/data.php"

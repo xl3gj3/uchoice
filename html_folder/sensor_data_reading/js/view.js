@@ -38,14 +38,22 @@ build_view.prototype.display_customer_data = function (data,selector){
     button :[]
   }
   for (var i = 0; i < data.length; i++) {
+    let display_name = data[i].serial_id;
+    if (data[i].customize_name != "") {
+      display_name = data[i].customize_name
+    }
     data_content += `<div>
-                        <span>product name :${data[i].name} </span>
-                        <span>serial id :${data[i].serial_id} </span>
+                        <span>Board type :${data[i].name} </span>
+                        <span id = "display_name-${data[i].serial_id}">Name:${display_name} </span>
                         <button class = "get_select_data" id = "product_data-${data[i].product_id}_${data[i].serial_id}">view</button>
+                        <input type = "text" id = "update_name-${data[i].serial_id}" placeholder = "New name"></input>
+                        <button class = "update_name" id = "button_update_name-${data[i].serial_id}" >update product name</button>
                      </div>`;
     selector.id.button.push(`product_data-${data[i].product_id}_${data[i].serial_id}`);
+    // selector.id.button.push(`update_name-${data[i].product_id}`);
   }
   selector.cls.button.push(`get_select_data`);
+  selector.cls.button.push(`update_name`);
 
   $('.customer_data_holder').html(data_content);
 };
@@ -53,14 +61,23 @@ build_view.prototype.sesnsor_data = function (data){
   // console.log("what kind of data we have ", data );
   let title = Object.keys(data[0]);
   let big_content = '';
+  let title_content = '';
+  let table_frame = '<table class = "sensor_data_table"></table>'
+
+  for (var i = 0; i < title.length; i++) {
+    title_content += `<th class = "table_header">${title[i]}</th>`;
+  }
+  big_content += `<tr>${title_content}</tr>`;
   for (var i = 0; i < data.length; i++) {
     let content = "";
     for (var j = 0; j < title.length; j++) {
-      content += `<span> ${title[j]}:${data[i][title[j]]} </span>`
+      content += `<td class = "table_header">${data[i][title[j]]} </td>`
     }
-    big_content += `<div>${content}</div>`;
+    big_content += `<tr>${content}</tr>`;
   }
-  $('.product_data_holder').html(big_content);
+  $('.product_data_holder').html(table_frame);
+  $('.sensor_data_table').html(`<tbody>${big_content}</tbody>`);
+
 
 }
 build_view.prototype.testing_page = function (selector){

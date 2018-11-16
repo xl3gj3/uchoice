@@ -29,16 +29,23 @@
           switch (action) {
             case 0:
               console.log("construct customer order data");
-              read_data.construct_display_page(response.data);
+              read_data.main.construct_display_page(response.data);
 
               break;
             case 1:
             console.log("construct product sensor data");
 
-              read_data.construct_sensor_data_page(response.data);
+              read_data.main.construct_sensor_data_page(response.data);
+
+              break;
+            case 4:
+            console.log("updating the name");
+
+              read_data.main.update_name(response.data);
 
               break;
             default:
+            // console.log("updating the name");
           }
         }
       }
