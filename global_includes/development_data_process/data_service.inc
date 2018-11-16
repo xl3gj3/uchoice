@@ -13,7 +13,7 @@ class data_get
 
   public function get_customer_order_data($customer_info){
     // var_dump($customer_info);
-    $this->db->query('select serial_number.product_id,serial_number.serial_id,product_list.*,customer_info.customer_id
+    $this->db->query('select serial_number.product_id,serial_number.serial_id,serial_number.customize_name,product_list.*,customer_info.customer_id
                       from serial_number
                       inner join product_list on product_list.product_id = serial_number.product_id
                       inner join customer_info on serial_number.customer_id = customer_info.customer_id
@@ -26,6 +26,19 @@ class data_get
     // echo "</pre>";
     return $result;
 
+  }
+  public function customize_product_name($data){
+    $oldkey = "name";
+    $newkey = "customize_name";
+    $json = str_replace('"'.$oldkey.'":', '"'.$newkey.'":', json_encode($data));
+
+    $data = json_decode($json,true);
+    // var_dump($data);
+    $this->db->query('UPDATE serial_number SET customize_name = :customize_name where serial_id = :serial_id')
+             ->bind(':customize_name',$data[$newkey])
+             ->bind(':serial_id',$data["serial_id"])
+             ->execute();
+    return $data;
   }
   public function get_sensor_data ($data){
     // var_dump($data);
