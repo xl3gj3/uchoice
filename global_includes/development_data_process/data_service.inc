@@ -42,8 +42,12 @@ class data_get
   }
   public function get_sensor_data ($data){
     // var_dump($data);
-    $table = $this->general_table_name.$data["product_id"];
-    $this->db->query('SELECT * from '.$table.' where serial_id = :serial_id')
+    // $table = $this->general_table_name.$data["product_id"];
+    $this->db->query('select sensor_data.*,serial_number.customize_name,serial_number.product_id,product_list.name,product_list.type,product_list.version
+                      from sensor_data
+                      inner join serial_number on serial_number.serial_id = sensor_data.serial_id
+                      inner join product_list on product_list.product_id = serial_number.product_id
+                      where serial_number.serial_id = :serial_id order by update_date desc;')
              // ->bind(":table",$table)
              ->bind(":serial_id",$data["serial_id"])
              ->execute();
@@ -53,6 +57,7 @@ class data_get
       for ($j=0; $j < sizeof($this->drop_col_name); $j++) {
         unset($result[$i][$this->drop_col_name[$j]]);
       }
+      $result[$i]["data"] = round($result[$i]["data"],2);
     }
     // echo "<pre>";
     // var_dump($result);

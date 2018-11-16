@@ -45,6 +45,9 @@
 
       return $this->response;
     }
+    public function get_number_sensors(){
+      return $this->sensors_number;
+    }
     private function parse_sensor_data(){
       $hex_name = '';
       $str_name='';

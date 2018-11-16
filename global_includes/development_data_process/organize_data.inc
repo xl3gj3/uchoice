@@ -9,9 +9,10 @@
     public $data;
     private $db;
 
-    private   $dic_sensor_name = array(
+    private $dic_sensor_name = array(
         "TEMP" => "temperature",
-        "CO2"  => "co2"
+        "CO2"  => "co2",
+        "O2" => "o2"
       );
     function __construct($data)
     {
@@ -27,39 +28,52 @@
     public function oraganized_data(){
       $this->json_change_key();
       $this->obtain_ids();
-      $this->round_number();
+      $this->insert_date_time();
+      // $this->round_number();
 
-      $this->data["update_date"] = date("Y-m-d D G:i:s",time());
+      // echo "before return out".PHP_EOL;
+      // var_dump($this->data);
       return $this->data;
     }
-    private function round_number(){
-      foreach ($this->data as $key => $value) {
-        echo "the key is $key".PHP_EOL;
-        echo "the type of value is " . gettype($value).PHP_EOL;
-        if (gettype($value) == "double") {
-          $this->data[$key] = round($this->data[$key],2);
-        }
-      }
+    public function insert_date_time(){
+      $this->data["update_date"] = date("Y-m-d G:i:s",time());
+      $this->data["day"] = date('D',time());
     }
+    // private function round_number(){
+    //   foreach ($this->data as $key => $value) {
+    //     echo "the key is $key".PHP_EOL;
+    //     echo "the type of value is " . gettype($value).PHP_EOL;
+    //     if (gettype($value) == "double") {
+    //       $this->data[$key] = round($this->data[$key],12);
+    //     }
+    //   }
+    // }
     private function obtain_ids(){
       $this->db->query('SELECT customer_id from serial_number where serial_id = :serial_id')
-               ->bind(':serial_id',hexdec($this->data["serial_id"]))
+               ->bind(':serial_id',$this->data["serial_id"])
                ->execute();
-      $result = $this->db->resultset();
+      $result = $this->db->single();
       // echo dechex(2147483647);
-      var_dump($result);
+      $this->data["customer_id"] = $result["customer_id"];
+      // var_dump($result);
       // 2147483647
     }
     private function json_change_key() {
       $size = sizeof($this->data);
       $arr_key = array_keys($this->data);
-
       for ($i=0; $i < $size; $i++) {
+
         if (array_key_exists($arr_key[$i],$this->dic_sensor_name)) {
+          // echo "the array key is " .$arr_key[$i].PHP_EOL;
+          // echo "new key is ".$this->dic_sensor_name[$arr_key[$i]].PHP_EOL;
           $json = str_replace('"'.$arr_key[$i].'":', '"'.$this->dic_sensor_name[$arr_key[$i]].'":', json_encode($this->data));
+          // echo "the json is ".PHP_EOL;
+          // echo $json.PHP_EOL;
+          $this->data = json_decode($json,true);
         }
+
       }
-      return json_decode($json,true);
+      // var_dump($json);
     }
 
 

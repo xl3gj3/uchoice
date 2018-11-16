@@ -14,6 +14,16 @@
     "name_len" => 10,
     "data_type_len" => 2
   );
+  $data_structure = array(
+    "serial_id" => "",
+    "customer_id" => 0,
+    "sensor_type" => "",
+    "data" => 0,
+    "update_date" =>"",
+    "day" => ""
+  );
+  $table_name = "sensor_data";
+  $number_of_sensor = 0;
 
   // var_dump($dic_lenght);
 
@@ -22,46 +32,33 @@
     $db = new db_helper();
     $tranform = new parse_hex($dic_lenght);
     $data = $_GET["data"];
-
     $output = $tranform->parse_data($data);
-    // echo "get request accepted".PHP_EOL;
-    // echo "content is ".PHP_EOL;
-    echo "after parsing ".PHP_EOL;
-    var_dump($output);
+    // echo "after parse".PHP_EOL;
+    // var_dump($output);
 
+    $number_of_sensor = $tranform->get_number_sensors();
+    // echo "number of the sensor $number_of_sensor".PHP_EOL;
     $organization = new organizing_data($output);
     $output = $organization->oraganized_data();
+    // echo "after return from organization".PHP_EOL;
+    // var_dump($output);
+    $arr_key = array_keys($output);
+    // var_dump($arr_key);
+    for ($i=0; $i < sizeof($arr_key); $i++) {
+      if (array_key_exists($arr_key[$i],$data_structure)) {
+        $data_structure[$arr_key[$i]] = $output[$arr_key[$i]];
+        unset($output[$arr_key[$i]]);
+      }
+    }
+    $sensor_name = array_keys($output);
+    for ($i=0; $i < $number_of_sensor; $i++) {
+      $data_structure["sensor_type"] = $sensor_name[$i];
+      $data_structure["data"] = $output[$sensor_name[$i]];
 
+      $id = $db->insert($data_structure, $table_name);
 
-    // $output = json_change_key($output, "TEMP", "temperature");
-    echo "after chaning key name ".PHP_EOL;
-
-    var_dump($output);
-    // echo hexdec($output["serial_id"]).PHP_EOL;
-    // echo "before settting time zone".date("Y-m-d D G:i:s",time()).PHP_EOL;
-    // date_default_timezone_set("America/Vancouver");
-    // echo "after settting time zone".date("Y-m-d D G:i:s",time()).PHP_EOL;
-
-    // echo $data;
-    // TEMP: comment the db process
-
-    // $parse_json = json_decode($json,true);
-    // var_dump($parse_json);
-    // {{url}}/sensor_process.php?id=1&data=AF75DC34024f322020000341a0cccd54454d50000341b170a4
-    // $table_name = "data_product_".$parse_json["product_id"];
-    // unset($parse_json["product_id"]);
-    // $parse_json["update_date"] = date("Y-m-d G:i:s",time());
-    //
-    // $id = $db->insert($parse_json,$table_name);
-    //
-    // echo "save successfully and the id is $id".PHP_EOL;
-    // $array = ["data"=>['name'=>"jerry","email"=>"jerry@hotmail.com"]];
-    // var_dump($array);
-    // $json_array = json_encode($array);
-    // echo $json_array;
-    // $data = json_decode($json);
-    // var_dump($data);
+      echo "successed insert and id is $id" .PHP_EOL;
+    }
   }
-    // var_dump($_REQUEST);
 
 ?>
