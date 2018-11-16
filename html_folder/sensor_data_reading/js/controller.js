@@ -30,14 +30,14 @@
     $(`.${selector.cls.button[0]}`).click(function(){
       let selected_id = $(this).attr('id');
       // selected_id is  product_data-1_1 first number is product id, second number is serial id
-      // console.log("selected_id is " ,selected_id);
+      console.log("selected_id is " ,selected_id);
       // console.log("the view button is click");
       let temp_var = selected_id.split(/\s*\-\s*/g);
       temp_var = temp_var[1].split(/\s*\_\s*/g);
       // console.log("the temp_var = ",temp_var);
-      controller.data_from_user["product_id"] = temp_var[0];
+      // controller.data_from_user["product_id"] = temp_var[0];
       controller.data_from_user["serial_id"] = temp_var[1];
-
+      // console.log(controller.data_from_user);
       // read_data.main_submit(1,controller.data_from_user,"get_sensor_data");
       read_data.main.submit(1,controller.data_from_user,"get_sensor_data");
     })

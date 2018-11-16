@@ -9,11 +9,11 @@
     ajax_config.api_url = url;
   }
   read_data_ajax.submit = function (action,data, function_name){
-    console.log("in the read_data_ajax file, the data to be submited is ", data);
+    // console.log("in the read_data_ajax file, the data to be submited is ", data);
     let data_string = JSON.stringify(data);
     let function_title = JSON.stringify(function_name);
-    console.log("function_name = " ,function_name);
-    console.log("url is ", ajax_config.api_url);
+    // console.log("function_name = " ,function_name);
+    // console.log("url is ", ajax_config.api_url);
     $.ajax({
       method : 'GET',
       dataType : 'json',

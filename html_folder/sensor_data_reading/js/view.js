@@ -39,7 +39,7 @@ build_view.prototype.display_customer_data = function (data,selector){
   }
   for (var i = 0; i < data.length; i++) {
     let display_name = data[i].serial_id;
-    if (data[i].customize_name != "") {
+    if (data[i].customize_name != null) {
       display_name = data[i].customize_name
     }
     data_content += `<div>
@@ -58,25 +58,30 @@ build_view.prototype.display_customer_data = function (data,selector){
   $('.customer_data_holder').html(data_content);
 };
 build_view.prototype.sesnsor_data = function (data){
-  // console.log("what kind of data we have ", data );
-  let title = Object.keys(data[0]);
-  let big_content = '';
-  let title_content = '';
-  let table_frame = '<table class = "sensor_data_table"></table>'
+  console.log("what kind of data we have ", data );
+  if (data.length <= 0) {
+    console.log("the lenght is 0");
+  }else {
+    let title = Object.keys(data[0]);
+    let big_content = '';
+    let title_content = '';
+    let table_frame = '<table class = "sensor_data_table"></table>'
 
-  for (var i = 0; i < title.length; i++) {
-    title_content += `<th class = "table_header">${title[i]}</th>`;
-  }
-  big_content += `<tr>${title_content}</tr>`;
-  for (var i = 0; i < data.length; i++) {
-    let content = "";
-    for (var j = 0; j < title.length; j++) {
-      content += `<td class = "table_header">${data[i][title[j]]} </td>`
+    for (var i = 0; i < title.length; i++) {
+      title_content += `<th class = "table_header">${title[i]}</th>`;
     }
-    big_content += `<tr>${content}</tr>`;
+    big_content += `<tr>${title_content}</tr>`;
+    for (var i = 0; i < data.length; i++) {
+      let content = "";
+      for (var j = 0; j < title.length; j++) {
+        content += `<td class = "table_header">${data[i][title[j]]} </td>`
+      }
+      big_content += `<tr>${content}</tr>`;
+    }
+    $('.product_data_holder').html(table_frame);
+    $('.sensor_data_table').html(`<tbody>${big_content}</tbody>`);
+
   }
-  $('.product_data_holder').html(table_frame);
-  $('.sensor_data_table').html(`<tbody>${big_content}</tbody>`);
 
 
 }
