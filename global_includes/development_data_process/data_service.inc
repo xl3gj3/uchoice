@@ -43,7 +43,7 @@ class data_get
   public function get_sensor_data ($data){
     // var_dump($data);
     // $table = $this->general_table_name.$data["product_id"];
-    $this->db->query('select sensor_data.*,serial_number.customize_name,serial_number.product_id,product_list.name,product_list.type,product_list.version
+    $this->db->query('select sensor_data.*,serial_number.customize_name,serial_number.product_id,product_list.name,product_list.generation,product_list.version
                       from sensor_data
                       inner join serial_number on serial_number.serial_id = sensor_data.serial_id
                       inner join product_list on product_list.product_id = serial_number.product_id
@@ -58,9 +58,41 @@ class data_get
         unset($result[$i][$this->drop_col_name[$j]]);
       }
       $result[$i]["data"] = round($result[$i]["data"],2);
+      $date_time = explode(" ",$result[$i]["update_date"]);
+      $result[$i]["update date"] = $date_time[0];
+      $result[$i]["update time"] = $date_time[1];
+      $result[$i]["ver"] = $result[$i]["generation"].".".$result[$i]["version"];
+      unset($result[$i]["update_date"]);
+      unset($result[$i]["generation"]);
+      unset($result[$i]["version"]);
+
+
+      // echo "sensor generation = ". $result[$i]["sensor_generation"] . PHP_EOL;
+      // $result[$i][$result[$i]["sensor_generation"]] = $result[$i]["data"];
+      // $array_key[$i] = array_keys($result[$i]);
+      // $special_key[$i] = $result[$i]["sensor_generation"];
+      // var_dump($result[$i]);
+      //
+      // echo "</pre>";
+
+      ksort($result[$i]);
+
     }
     // echo "<pre>";
+    // echo "</pre>";
+    // $final_result_keys = [];
+    // $final_result = [];
+    //
+    // for ($i=0; $i < sizeof($result); $i++) {
+    // $final_result_keys = array_unique(array_merge($final_result_keys,$array_key[$i]));
+    // }
+    // for ($i=0; $i < sizeof($final_result_keys); $i++) {
+    //   $final_result[$final_result_keys[$i]] =$result[$i][$final_result_keys[$i]];
+    // }
+    // echo "<pre>";
     // var_dump($result);
+    //
+    //
     // echo "</pre>";
     return $result;
   }
