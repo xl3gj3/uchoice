@@ -9,7 +9,21 @@ class data_get
   private $db_helper;
   private $db;
   private $general_table_name = "data_product_";
-  private $drop_col_name= ["data_id","serial_id","customer_id"];
+  private $drop_col_name= ["data_id","serial_id","customer_id","version","sensors_number","generation",
+                            "sensor_type","update_date","data"];
+  private $unit = array(
+    "o2" => "%",
+    "co2" => "%",
+    "temperature" => "C",
+    "humidity" => "%"
+  );
+
+  // unset($preset_data_structure["version"]);
+  // unset($preset_data_structure["sensors_number"]);
+  // unset($preset_data_structure["sensor_type"]);
+  // unset($preset_data_structure["update_date"]);
+  // unset($preset_data_structure["data"]);
+  private $product_info_key = ["customize_name","name","product_id"];
 
   public function get_customer_order_data($customer_info){
     // var_dump($customer_info);
@@ -43,62 +57,62 @@ class data_get
   public function get_sensor_data ($data){
     // var_dump($data);
     // $table = $this->general_table_name.$data["product_id"];
-    $this->db->query('select sensor_data.*,serial_number.customize_name,serial_number.product_id,product_list.name,product_list.generation,product_list.version
+    $default_decimal = 3;
+    $sensors_number = 0;
+    $count = 0;
+    $preset_data_structure = [];
+    $final_result = [];
+    $this->db->query('select sensor_data.*,serial_number.customize_name,product_list.name,product_list.generation,product_list.version,product_list.sensors_number
                       from sensor_data
                       inner join serial_number on serial_number.serial_id = sensor_data.serial_id
                       inner join product_list on product_list.product_id = serial_number.product_id
                       where serial_number.serial_id = :serial_id order by update_date desc;')
-             // ->bind(":table",$table)
              ->bind(":serial_id",$data["serial_id"])
              ->execute();
     $result = $this->db->resultset();
-
+    // use sensors number to know how many rows is a set of data
+    $sensors_number = $result[0]["sensors_number"];
     for ($i=0; $i < sizeof($result) ; $i++) {
-      for ($j=0; $j < sizeof($this->drop_col_name); $j++) {
-        unset($result[$i][$this->drop_col_name[$j]]);
+      if ($count == 0) {
+        $preset_data_structure = $result[$i];
       }
-      $result[$i]["data"] = round($result[$i]["data"],2);
-      $date_time = explode(" ",$result[$i]["update_date"]);
-      $result[$i]["update date"] = $date_time[0];
-      $result[$i]["update time"] = $date_time[1];
-      $result[$i]["ver"] = $result[$i]["generation"].".".$result[$i]["version"];
-      unset($result[$i]["update_date"]);
-      unset($result[$i]["generation"]);
-      unset($result[$i]["version"]);
+      // add the o2, temp, etc... into the $preset_data_structure's key values
+      $preset_data_structure[$result[$i]["sensor_type"]] = $result[$i]["data"];
+      // assign the data for that key name;
+      $preset_data_structure[$result[$i]["sensor_type"]] = round($preset_data_structure[$result[$i]["sensor_type"]],$default_decimal);
+      // add the unit for the sensor type;
+      $preset_data_structure[$result[$i]["sensor_type"]] = $preset_data_structure[$result[$i]["sensor_type"]].$this->unit[$result[$i]["sensor_type"]];
+      $count = $count + 1;
+      // when $count = sensors number,this mean we have completed the reading of 1 set of date
+      // it is ready to go into the final_result array
+      if ($count == $sensors_number) {
+        $date_time = explode(" ",$preset_data_structure["update_date"]);
+        // saperate date and time
+        $preset_data_structure["update date"] = $date_time[0];
+        $preset_data_structure["update time"] = $date_time[1];
+        $preset_data_structure["ver"] = $preset_data_structure["generation"].".".$preset_data_structure["version"];
+        for ($j=0; $j < sizeof($this->drop_col_name); $j++) {
+          unset($preset_data_structure[$this->drop_col_name[$j]]);
+        }
+        // sort the result before going into the final result set
+        // ksort($preset_data_structure);
+
+        $final_result[] = $preset_data_structure;
+        // reset the count for new set of data
+        $count = 0;
+      }
+      // echo "the count is $count".PHP_EOL;;
 
 
-      // echo "sensor generation = ". $result[$i]["sensor_generation"] . PHP_EOL;
-      // $result[$i][$result[$i]["sensor_generation"]] = $result[$i]["data"];
-      // $array_key[$i] = array_keys($result[$i]);
-      // $special_key[$i] = $result[$i]["sensor_generation"];
-      // var_dump($result[$i]);
-      //
-      // echo "</pre>";
-
-      ksort($result[$i]);
+      // ksort($result[$i]);
 
     }
-    // echo "<pre>";
-    // echo "</pre>";
-    // $final_result_keys = [];
-    // $final_result = [];
-    //
-    // for ($i=0; $i < sizeof($result); $i++) {
-    // $final_result_keys = array_unique(array_merge($final_result_keys,$array_key[$i]));
-    // }
-    // for ($i=0; $i < sizeof($final_result_keys); $i++) {
-    //   $final_result[$final_result_keys[$i]] =$result[$i][$final_result_keys[$i]];
-    // }
-    // echo "<pre>";
-    // var_dump($result);
-    //
-    //
-    // echo "</pre>";
-    return $result;
+
+    return $final_result;
   }
   function __construct()
   {
-    $this->db_helper = new db_helper();
+    // $this->db_helper = new db_helper();
     $this->db = new Database();
   }
 }

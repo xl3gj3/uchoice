@@ -19,7 +19,7 @@
           bind_event_display_data(selector);
           break;
         default:
-          console.log("testing selector event binding will be handel here");
+          // console.log("testing selector event binding will be handel here");
           read_init_value(selector);
 
           bind_event_testing(selector);

@@ -12,7 +12,9 @@
     private $dic_sensor_name = array(
         "TEMP" => "temperature",
         "CO2"  => "co2",
-        "O2" => "o2"
+        "O2" => "o2",
+        "HUMI" =>'humidity',
+        "LIGH" => "light"
       );
     function __construct($data)
     {

@@ -65,6 +65,7 @@
 
       for ($i=0; $i < sizeof($hex_name); $i++) {
         // var_dump($hex_name[$i] );
+        // 20 is space, means name is done, 00 is default name space
         if ($hex_name[$i] == "20" || $hex_name[$i] == "00") {
           break;
         }
@@ -107,7 +108,8 @@
           break;
 
         default:
-          // # use hexdec
+          $reading_data = hexdec($reading_data);
+          $this->response[$str_name] = $reading_data;
           break;
       }
 
