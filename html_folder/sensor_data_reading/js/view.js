@@ -59,10 +59,10 @@ build_view.prototype.display_customer_data = function (data,selector){
 };
 build_view.prototype.sesnsor_data = function (data){
   console.log("what kind of data we have ", data );
-  if (data.length <= 0) {
+  if (data.sensor_data.length <= 0) {
     console.log("the lenght is 0");
   }else {
-    let title = Object.keys(data[0]);
+    let title = Object.keys(data.sensor_data[0]);
     let big_content = '';
     let title_content = '';
     let table_frame = '<table class = "sensor_data_table"></table>'
@@ -71,15 +71,15 @@ build_view.prototype.sesnsor_data = function (data){
       title_content += `<th class = "table_header">${title[i]}</th>`;
     }
     big_content += `<tr>${title_content}</tr>`;
-    for (var i = 0; i < data.length; i++) {
+    for (var i = 0; i < data.sensor_data.length; i++) {
       let content = "";
       for (var j = 0; j < title.length; j++) {
-        content += `<td class = "table_header">${data[i][title[j]]} </td>`
+        content += `<td class = "table_header">${data.sensor_data[i][title[j]]} </td>`
       }
       big_content += `<tr>${content}</tr>`;
     }
     $('.product_data_holder').html(table_frame);
-    $('.sensor_data_table').html(`<tbody>${big_content}</tbody>`);
+    $('.sensor_data_table').html(`<div>Name : ${data.static_data.customize_name} Product Type : ${data.static_data.name}</div><tbody>${big_content}</tbody>`);
 
   }
 

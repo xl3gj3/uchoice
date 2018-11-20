@@ -17,6 +17,7 @@ class data_get
     "temperature" => "C",
     "humidity" => "%"
   );
+  private $static_key = ["customize_name","name"];
 
   // unset($preset_data_structure["version"]);
   // unset($preset_data_structure["sensors_number"]);
@@ -62,6 +63,8 @@ class data_get
     $count = 0;
     $preset_data_structure = [];
     $final_result = [];
+    $name = [];
+    $output = [];
     $this->db->query('select sensor_data.*,serial_number.customize_name,product_list.name,product_list.generation,product_list.version,product_list.sensors_number
                       from sensor_data
                       inner join serial_number on serial_number.serial_id = sensor_data.serial_id
@@ -96,7 +99,10 @@ class data_get
         }
         // sort the result before going into the final result set
         // ksort($preset_data_structure);
-
+        for ($k=0; $k < sizeof($this->static_key); $k++) {
+          $name[$this->static_key[$k]] = $preset_data_structure[$this->static_key[$k]];
+          unset($preset_data_structure[$this->static_key[$k]]);
+        }
         $final_result[] = $preset_data_structure;
         // reset the count for new set of data
         $count = 0;
@@ -107,8 +113,9 @@ class data_get
       // ksort($result[$i]);
 
     }
-
-    return $final_result;
+    $output["sensor_data"] = $final_result;
+    $output["static_data"] = $name;
+    return $output;
   }
   function __construct()
   {
