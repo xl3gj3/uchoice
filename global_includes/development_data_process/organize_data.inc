@@ -28,14 +28,32 @@
     //  return json_decode($json,true);
     // }
     public function oraganized_data(){
+      var_dump($this->data);
+
+      $this->determineSensorType();
       $this->json_change_key();
       $this->obtain_ids();
       $this->insert_date_time();
       // $this->round_number();
 
       // echo "before return out".PHP_EOL;
-      // var_dump($this->data);
       return $this->data;
+    }
+    public function determineSensorType(){
+      $temp_data = $this->data;
+      unset($temp_data["serial_id"]);
+      foreach ($temp_data as $sensorName => $sensorData) {
+        $sensorNameArray = str_split($sensorName,1);
+        var_dump($sensorNameArray[0]);
+        // COMBAK: This is the place deal with the prefix , ie s,D,d;
+        // the s is the sensor data, which just store into db
+        // D and d is the digital input and output, this is realted to the front end display
+        unset($sensorNameArray[0]);
+        $newSensorName = implode("",$sensorNameArray);
+        $this->data[$newSensorName] = $sensorData;
+        unset($this->data[$sensorName]);
+      }
+
     }
     public function insert_date_time(){
       $this->data["update_date"] = date("Y-m-d G:i:s",time());
@@ -56,7 +74,7 @@
                ->execute();
       $result = $this->db->single();
       // echo dechex(2147483647);
-      $this->data["customer_id"] = $result["customer_id"];
+      // $this->data["customer_id"] = $result["customer_id"];
       // var_dump($result);
       // 2147483647
     }
